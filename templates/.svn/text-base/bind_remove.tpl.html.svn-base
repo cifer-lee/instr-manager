@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <?php include 'styles.tpl.html' ?>
+        <style>
+        </style>
+    </head>
+    <body>
+        <div id="wrapper" class="container">
+            <div id="header">
+                <?php 
+                $home='';$instr='';$bind='active';$ad='';
+                include 'navbar.tpl.html'; 
+                ?>
+            </div>
+            <div id="content">
+                <div class="row">
+                    <div class="span2">
+                        <?php include 'bind_navlist.tpl.html' ?>
+                    </div>
+                    <div class="span10">
+                        <form id="frm-bind-remove" action="/bindRemove" method="post">
+                            <label for="">仪器编号</label>
+                            <input id="instr-no" name="instr-id" type="text" />
+                            <span class="help-inline">输入仪器编号以查询与其相关联的学生</span>
+                            
+                            <label for="">解绑原因</label>
+                            <select name="reason">
+                                <option value="damaged">仪器损坏</option>
+                                <option value="losed">仪器丢失</option>
+                                <option value="unused">库房回收</option>
+                            </select>
+                            <span class="help-inline">请选择解除关联的原因</span>
+                            
+                            <div id="bind-info" style="display: none">
+                                <div class="alert alert-info">
+                                    <p>当前有如下同学与此仪器关联</p>
+                                    <p>建议您为这些同学指定新的仪器, 如不想指定, 请留空</p>
+                                </div>
+                                <input type="text" name="newInstrId" placeholder="输入一个新的仪器编号" />
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>STUDENT NO.</th>
+                                            <th>STUDENT NAME</th>
+                                            <th>CLASS NAME</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="nobind-info" style="display: none">
+                                <div class="alert alert-info">
+                                    <p>当前没有同学与此仪器关联</p>
+                                </div>
+                            </div>
+
+                            <label></label>
+                            <input id="btn-bind-rem" class="btn" type="button" value="确认" />
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php include 'scripts.tpl.html' ?>
+    </body>
+    <script>
+        YUI(YUI_OFFLINE_CONF).use('node', 'io', function(Y) {
+            Y.one('#btn-bind-rem').on('click', function() {
+                // TODO: 做点检验操作
+                var instrId = document.getElementById('instr-no').value;
+                if(instrId && instrId.match(/^[0-9]{12}$/)) {
+                    document.getElementById('frm-bind-remove').submit();
+                } else {
+                }
+            });
+            Y.one('#instr-no').on('blur', function() {
+                var instrNo = this.get('value');
+                var uri = '/bindQueryAjax&filter=' + instrNo;
+                Y.io(uri);
+
+                Y.on('io:success', function(transId, response, args) {
+                    var result = JSON.parse(response.responseText);
+                    var html = '';
+
+                    for(var i in result) {
+                        var id = result[i].id;
+                        var instrId = result[i].instr_id;
+                        var stuId = result[i].student_id;
+                        var stuName = result[i].student_name;
+                        var className = result[i].class_name;
+
+                        html += '<tr>';
+                        html += '   <td>' + id + '</td>';
+                        html += '   <td>' + stuId + '</td>';
+                        html += '   <td>' + stuName + '</td>';
+                        html += '   <td>' + className + '</td>';
+                        html += '   <input type="hidden" name="bindIds[]" value="' + id + '" />';
+                        html += '   <input type="hidden" name="stuIds[]" value="' + stuId + '" />';
+                        html += '</tr>';
+                    }
+                    Y.one('tbody').setHTML(html);
+                    if(result.length) {
+                        Y.one("#bind-info").setStyle('display', 'block');
+                        Y.one("#nobind-info").setStyle('display', 'none');
+                    } else {
+                        Y.one("#bind-info").setStyle('display', 'none');
+                        Y.one("#nobind-info").setStyle('display', 'block');
+                    }
+                });
+            });
+        });
+    </script>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <?php include 'styles.tpl.html' ?>
+        <style>
+        </style>
+    </head>
+    <body>
+        <div id="wrapper" class="container">
+            <div id="header">
+                <?php 
+                $home='';$instr='';$bind='active';$ad='';
+                include 'navbar.tpl.html'; 
+                ?>
+            </div>
+            <div id="content">
+                <div class="row">
+                    <div class="span2">
+                        <?php include 'bind_navlist.tpl.html' ?>
+                    </div>
+                    <div class="span10">
+                        <form id="frm-bind-add" class="form-horizontal" action="/bindAdd" method="post">
+                            <div class="control-group">
+                                <label class="control-label" for="stu-no">学生编号</label>
+                                <div class="controls">
+                                    <input id="stu-no" name="stu-no" type="text" />
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <input id="instr-item-add" class="btn" type="button" value="增加一项" />
+                                <input id="instr-item-del" class="btn" type="button" value="减少一项" />
+                            </div>
+                            <div id="instr-items">
+                                <div class="control-group">
+                                    <label class="control-label" for="instr-no[]">仪器编号</label>
+                                    <div class="controls">
+                                        <input class="instr-no" name="instr-no[]" type="text" />
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="instr-no[]">仪器编号</label>
+                                    <div class="controls">
+                                        <input class="instr-no" name="instr-no[]" type="text" />
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="instr-no[]">仪器编号</label>
+                                    <div class="controls">
+                                        <input class="instr-no" name="instr-no[]" type="text" />
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="instr-no[]">仪器编号</label>
+                                    <div class="controls">
+                                        <input class="instr-no" name="instr-no[]" type="text" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <input id="btn-add" class="btn" type="button" value="添加关联" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php include 'scripts.tpl.html' ?>
+    </body>
+    <script>
+        YUI().use('node', function(Y) {
+            Y.on('click', function() {
+                if(Y.all(".instr-no").getDOMNodes().length > 1) {
+                    Y.one("#instr-items > div:last-child").remove();
+                }
+            }, "#instr-item-del");
+            
+            Y.on('click', function() {
+                var node = '<div class="control-group">';
+                node += '<label class="control-label" for="instr-no[]">仪器编号</label>';
+                node += '<div class="controls">'
+                node += '<input class="instr-no" name="instr-no[]" type="text" />';
+                node += '</div>';
+                node += '</div>';
+                var obj = Y.Node.create(node);
+                Y.one('#instr-items').appendChild(obj);
+            }, "#instr-item-add");
+           
+
+            Y.on('click', function() {
+                // TODO: 做点检验操作
+                var valid = true;
+                var stuId = Y.one('#stu-no').get('value');
+                if(!stuId || !stuId.match(/^[0-9]{12}$/)) {
+                    valid = false;
+                }
+                Y.all('.instr-no').each(function(curNode, index) {
+                    var value = curNode.get('value');
+                    (value && value.match(/^[0-9]{12}$/)) || (valid = false);
+                });
+
+                if(valid) {
+                    document.getElementById('frm-bind-add').submit();
+                }
+            }, "#btn-add");
+        });
+    </script>
+</html>

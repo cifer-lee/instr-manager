@@ -1,0 +1,9 @@
+<ul class="nav nav-list">
+    <li class="nav-header">Navigation</li>
+    <li class="divider"></li>
+    <li><a href="/">首页</a></li>
+    <li><a href="/bindIndex">动态</a></li>
+    <li><a href="/bindQuery">查看关联</a></li>
+    <li><a href="/bindAdd">添加关联</a></li>
+    <li><a href="/bindRemove">解除关联</a></li>
+</ul>

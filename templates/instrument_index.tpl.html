@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <?php include 'styles.tpl.html' ?>
+        <style>
+        </style>
+    </head>
+    <body>
+        <div id="wrapper" class="container">
+            <div id="header">
+                <?php 
+                $home='';$instr='active';$bind='';$ad='';
+                include 'navbar.tpl.html'; 
+                ?>
+            </div>
+            <div id="content">
+                <div class="row">
+                    <div class="span2">
+                        <?php include 'instrument_navlist.tpl.html' ?>
+                    </div>
+                    <div class="span10">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+    </script>
+</html>

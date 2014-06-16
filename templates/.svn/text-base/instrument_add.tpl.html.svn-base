@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <?php include 'styles.tpl.html' ?>
+        <style>
+        </style>
+    </head>
+    <body>
+        <div id="wrapper" class="container">
+            <div id="header">
+                <?php 
+                $home='';$instr='active';$bind='';$ad='';
+                include 'navbar.tpl.html'; 
+                ?>
+            </div>
+            <div id="content">
+                <div class="row">
+                    <div class="span2">
+                        <?php include 'instrument_navlist.tpl.html' ?>
+                    </div>
+                    <div class="span10">
+                        <form id="frm-instr-add" action="/instrAdd" method="post">
+                            <fieldset>
+                                <legend>单个仪器录入</legend>
+
+                                <label>仪器编号</label>
+                                <input id="instr-no" name="instr-id" type="text" placeholder="12 位数字仪器编号..." />
+
+                                <label>仪器名称</label>
+                                <input id="instr-name" name="instr-name" type="text" placeholder="仪器名称, 规格..."/>
+
+                                <label></label>
+                                <input id="btn-add" class="btn" type="button" value="添加" />
+                            </fieldset>
+                        </form>
+                        <form id="frm-instr-batch-add" action="/instrBatchAdd" method="post" enctype="multipart/form-data">
+                            <fieldset>
+                                <legend>批量仪器录入</legend>
+                                
+                                <div class="alert alert-info">
+                                    <p>csv 文件的格式如下: </p>
+                                    <p>仪器编号, 仪器名称 </p>
+                                </div>
+
+                                <label></label>
+                                <input name="instrcsv" type="file" />
+                                <span class="help-inline">选择一个 csv 文件</span>
+
+                                <label></label>
+                                <input id="btn-batch-add" class="btn" type="button" value="批量添加" />
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php include 'scripts.tpl.html' ?>
+    </body>
+    <script>
+        YUI(YUI_OFFLINE_CONF).use('node', 'button', 'cssgrids', function(Y) {
+            Y.on('click', function() {
+                // TODO: 做点检验操作
+                var instrId = document.getElementById('instr-no').value;
+                var instrName = document.getElementById('instr-name').value;
+                if(instrId && instrName && instrId.match(/^[0-9]{12}$/)) {
+                    document.getElementById('frm-instr-add').submit();
+                    } else {
+                }
+            }, "#btn-add");
+            Y.one('#btn-batch-add').on('click', function() {
+                Y.one('#frm-instr-batch-add').submit();
+            });
+        });
+    </script>
+</html>

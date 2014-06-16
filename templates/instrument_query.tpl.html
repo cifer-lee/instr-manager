@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script src="/js/yui-min.js"></script>
+        <?php include 'styles.tpl.html' ?>
+    </head>
+    <body>
+        <div id="wrapper" class="container">
+            <div id="header">
+                <?php 
+                $home='';$instr='active';$bind='';$ad='';
+                include 'navbar.tpl.html'; 
+                ?>
+            </div>
+            <div id="content">
+                <div class="row">
+                    <div class="span2">
+                        <?php include 'instrument_navlist.tpl.html' ?>
+                    </div>
+                    <div class="span10">
+                        <form id="frm-filter" class="form-search pull-right" action="/instrQuery&page=0&filter=" method="get">
+                            <input id="input-filter" class="input-xlarge search-query" type="text" placeholder="仪器编号" value="<?= $filter ?>" />
+                            <input id="input-query" class="btn" type="button" value="过滤" />
+                        </form>
+                        <form id="frm-instr-rem" action="/instrRemove" method="post">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>INSTRUMENT NO.</th>
+                                        <th>INSTRUMENT TITLE</th>
+                                        <th>STATUS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($result as $v) { ?>
+                                    <tr>
+                                        <td><input name="ids[]" type="checkbox" value="<?= $v['id'] ?>" /></td>
+                                        <td><?= $v['id'] ?></td>
+                                        <td><?= $v['name'] ?></td>
+                                        <td><?= $v['status'] ?></td>
+                                    </tr>
+                                    <?php } ?>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><input id="btn-instr-rem" type="button" class="btn" value="删除选中项" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                        <div id="pager" class="pagination pagination-centered">
+                            <ul>
+                                <li class="<?= $cur_page == 0 ? 'disabled' : '' ?>"><a href="/instrQuery&page=<?= $cur_page - 1 ?>">&laquo;</a></li>
+                                <?php for ($i = 0 ; $i < $total_pages ; ++$i) { ?>
+                                <li class="<?= $i == $cur_page ? 'active' : '' ?>"><a href="/instrQuery&page=<?= $i ?>"><?= $i + 1 ?></a></li>
+                                <?php } ?>
+                                <li class="<?= $cur_page == $total_pages - 1 ? 'disabled' : '' ?>"><a href="/instrQuery&page=<?= $cur_page + 1 ?>">&raquo;</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php include 'scripts.tpl.html' ?>
+    </body>
+    <script>
+        //$("#nav-menu").menu();
+        YUI().use('node', function(Y) {
+            /*
+            var prompt_message = '仪器编号';
+            var inputFilter = Y.one('#input-filter');
+
+            if (!inputFilter.get('value')) {
+                Y.one("#input-filter").setStyle('color', 'gray');
+                Y.one("#input-filter").set('value', prompt_message);
+            }
+
+            inputFilter.on('focus', function() {
+                var value = this.get('value');
+                (value == prompt_message) && this.set('value', '');
+                this.setStyle('color', 'black');
+            });
+
+            inputFilter.on('blur', function() {
+                var value = this.get('value');
+                if(!value) {
+                    this.set('value', prompt_message);
+                    this.setStyle('color', 'gray');
+                }
+            });
+            */
+
+            Y.one("#input-query").on('click', function() {
+                var filter = Y.one("#input-filter").get('value');
+                location.href = "/instrQuery&page=0&filter=" + filter;
+            });
+
+            Y.one("#btn-instr-rem").on('click', function() {
+                Y.one("#frm-instr-rem").submit();
+            });
+        });
+    </script>
+</html>
